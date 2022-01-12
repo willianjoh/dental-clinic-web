@@ -1,0 +1,111 @@
+<section class="component-body">
+  <div class="component-wrapper cmpt-wrp">
+    <form [formGroup]="formulario" class="width-full create-account-form">
+      <fieldset class="row mx-0 mb-3 mt-4">
+        <div class="col-md-4 col-lg-6">
+          <div class="form-group">
+            <label for="nome" class="input-label">Nome Completo:</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid' : isValidated('nome')}"
+              formControlName="nome" name="nome" id="nome" placeholder="Nome completo:">
+            <div *ngIf="isValidated('nome')" class="invalid-feedback">
+              Nome Completo é obrigatório.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="form-group">
+            <label for="nome" class="input-label">CPF:</label>
+            <input type="text" class="form-control" name="cpf" [ngClass]="{'is-invalid' : isValidated('cpf')}"
+              formControlName="cpf" placeholder="CPF:" mask="000.000.000-00">
+            <div *ngIf="isValidated('cpf')" class="invalid-feedback">
+              CPF é obrigatório.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="nome" class="input-label">RG:</label>
+            <input type="text" class="form-control" name="rg" [ngClass]="{'is-invalid' : isValidated('rg')}"
+              formControlName="rg" placeholder="RG:" mask="AA-00.000.000">
+            <div *ngIf="isValidated('rg')" class="invalid-feedback">
+              RG é obrigatório.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-lg-3">
+          <div class="form-group">
+            <label for="nome" class="input-label">Data de Nascimento:</label>
+            <input type="text" placeholder="Data de Nascimento:" class="form-control"
+              [ngClass]="{'is-invalid' : isValidated('dataNascimento')}" formControlName="dataNascimento" bsDatepicker
+              [bsConfig]="{ isAnimated: true, containerClass: 'theme-default', adaptivePosition: true}">
+            <div *ngIf="isValidated('dataNascimento')" class="invalid-feedback">
+              Data de Nascimento é obrigatório.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="form-group">
+            <label for="nome" class="input-label">Email:</label>
+            <input type="text" class="form-control" name="email" [ngClass]="{'is-invalid' : isValidated('email')}"
+              formControlName="email" placeholder="Email:">
+            <div *ngIf="isValidated('email')" class="invalid-feedback">
+              Email é obrigatório.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="nome" class="input-label">Celular:</label>
+            <input type="text" class="form-control" name="contato" formControlName="contato"
+              [ngClass]="{'is-invalid' : isValidated('contato')}" placeholder="Celular:" mask="(00) 00000-0000">
+            <div *ngIf="isValidated('contato')" class="invalid-feedback">
+              Celular é obrigatório.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="nome" class="input-label">Telefone Fixo:</label>
+            <input type="text" class="form-control" name="contatoFixo" formControlName="contatoFixo"
+              placeholder="Telefone Fixo:" mask="(00) 0000-0000">
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="nome" class="input-label">Gênero:</label>
+              <div class="input-group mb-3">
+                <select class="custom-select" formControlName="genero"
+                  [ngClass]="{'is-invalid' : isValidated('genero')}">
+                  <option value="1">Masculino</option>
+                  <option value="2">Feminino</option>
+                </select>
+                <div *ngIf="isValidated('genero')" class="invalid-feedback">
+                  Gênero é obrigatório.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 row" style="margin-top: 32px;">
+            <div class="col-sm-6">Maior de 18 anos?</div>
+            <div class="col-sm-6">
+              <input class="form-check-input" type="checkbox" id="gridCheck1">
+              <label class="form-check-label" style="margin-right: 44px;" for="gridCheck1">
+                Sim
+              </label>
+              <input class="form-check-input" type="checkbox" id="gridCheck1">
+              <label class="form-check-label" for="gridCheck1">
+                Não
+              </label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <div class="col-12 text-center align-text-bottom">
+        <button type="button" class="btn btn-primary mx-2">
+          Proximo
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

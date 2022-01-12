@@ -1,0 +1,194 @@
+<h1 class="pt-3" style="text-align: center;">{{'Cadastrar Paciente'}}</h1>
+<mat-card>
+  <mat-stepper #stepper class="example-form">
+    <mat-step [stepControl]="dadosPessoaisForm">
+      <form [formGroup]="dadosPessoaisForm">
+        <ng-template matStepLabel>Dados Pessoais</ng-template>
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Name Completo</mat-label>
+              <input matInput placeholder="" formControlName="nome" required>
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'nome')">{{"Nome é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">CPF</mat-label>
+              <input matInput mask="000.000.000-00" formControlName="cpf" required>
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'cpf')">{{"CPF é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">RG<mat-label [style.fontSize.px]="12"> (Opcional) </mat-label>
+              </mat-label>
+              <input matInput mask="AA-00.000.000" placeholder="MG-99.999.999" formControlName="rg">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
+              <input matInput [matDatepicker]="picker" placeholder="01/01/1900" formControlName="dataNascimento">
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'dataNascimento')">{{"Data de Nasicmento é
+                obrigatório."}}
+              </mat-error>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Email</mat-label>
+              <input matInput placeholder="exemplo@emai.com" formControlName="email">
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'email')">{{"Email é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Celular</mat-label>
+              <input matInput mask="(00) 00000-0000" placeholder="(99) 99999-9999" formControlName="contato">
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'contato')">{{"Celular é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Telefone Fixo <mat-label [style.fontSize.px]="12"> (Opcional)
+                </mat-label>
+              </mat-label>
+              <input matInput mask="(00) 0000-0000" placeholder="(99) 9999-9999" formControlName="contatoFixo">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Gênero</mat-label>
+              <mat-select formControlName="genero">
+                <mat-option *ngFor="let x of generos" [value]="x.value">
+                  {{x.descricao}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'genero')">{{"Gênero é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Profissão <mat-label [style.fontSize.px]="12"> (Opcional)
+                </mat-label>
+              </mat-label>
+              <input matInput placeholder="Autônomo" formControlName="profissao">
+            </mat-form-field>
+          </div>
+          <div class="col-6 align-center">
+            <div class="col-4 margin-bottom">
+              Maior de 18 anos?
+            </div>
+            <mat-slide-toggle class="margin-bottom" formControlName="maiorIdade"></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4" style="padding-left: 26px;">
+            <button mat-raised-button matStepperNext color="primary" style="width: 166px;"
+              (click)="nextTabValidation()">Proximo</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="enderecoForm" label="Endereço">
+      <form [formGroup]="enderecoForm">
+        <div class="row">
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">CEP</mat-label>
+              <input matInput formControlName="cep" mask="00000-000" placeholder="99999-999" (blur)="consultaCep()">
+              <mat-error *ngIf="isValidated(enderecoForm, 'cep')">{{"CEP é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">N°</mat-label>
+              <input matInput formControlName="numero" placeholder="">
+              <mat-error *ngIf="isValidated(enderecoForm, 'numero')">{{"N° é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Complemento<mat-label [style.fontSize.px]="12"> (Opcional)
+                </mat-label>
+              </mat-label>
+              <input matInput formControlName="complemento" placeholder="Bl 1, apto 101">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-7">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Rua</mat-label>
+              <input matInput formControlName="logradouro" placeholder="Av. 1° de Junho ">
+              <mat-error *ngIf="isValidated(enderecoForm, 'logradouro')">{{"Rua é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-5">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Bairro</mat-label>
+              <input matInput formControlName="bairro" placeholder="Centro">
+              <mat-error *ngIf="isValidated(enderecoForm, 'bairro')">{{"Bairro é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field class="full-width-field" appearance="outline">
+              <mat-label>Estado</mat-label>
+              <mat-select formControlName="estado">
+                <mat-option *ngFor="let estado of estados" [value]="estado.sigla">
+                  {{estado.nome}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isValidated(enderecoForm, 'estado')">{{"Estado é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Cidade</mat-label>
+              <mat-select formControlName="cidade">
+                <mat-option *ngFor="let cidade of cidades" [value]="cidade.nome">
+                  {{cidade.nome}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isValidated(enderecoForm, 'cidade')">{{"Cidade é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3" style="padding-left: 26px;">
+            <button type="button" mat-button matStepperPrevious color="accent" style="width: 166px;">Voltar</button>
+          </div>
+          <div class="col-lg-3">
+            <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;"
+              (click)="nextTabValidation()">Proximo</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="informacoesForm" label="Informações Adicionais">
+      <form [formGroup]="informacoesForm">
+        <div class="row">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Informações Adicionais</mat-label>
+              <textarea matInput></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div>
+          <button mat-button matStepperPrevious>Voltar</button>
+          <button mat-button (click)="salvar()">Salvar</button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-stepper>
+</mat-card>

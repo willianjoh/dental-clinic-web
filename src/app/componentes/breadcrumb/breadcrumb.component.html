@@ -1,0 +1,24 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li *ngIf="hasHomeRoute" class="breadcrumb-item">
+      <a routerLink="/" title="Página inicial">
+        <span class="bi bi-house-fill"></span><span class="sr-only">Início</span>
+      </a>
+    </li>
+    <ng-container *ngFor="let item of (hasHomeRoute ? breadcrumbs.slice(1) : breadcrumbs)">
+      <ng-container *ngTemplateOutlet="breadcrumbsListItemTpl; context: {$implicit: item}"></ng-container>
+    </ng-container>
+  </ol>
+</nav>
+<ng-template #breadcrumbsItemTpl let-item>
+  <ng-container *ngIf="!item.routepath">
+    <span *ngIf="!item.routepath" class="sr-only">Atual: </span>{{item.title}}
+  </ng-container>
+</ng-template>
+
+<ng-template #breadcrumbsListItemTpl let-item>
+  <li class="breadcrumb-item" [ngClass]="{'active': item.active}" [title]="(item.active ? 'Atual: ' : '') + item.title"
+  [attr.aria-current]="item.active ? 'location' : false">
+  <ng-container *ngTemplateOutlet="breadcrumbsItemTpl; context: {$implicit: item}"></ng-container>
+</li>
+</ng-template>

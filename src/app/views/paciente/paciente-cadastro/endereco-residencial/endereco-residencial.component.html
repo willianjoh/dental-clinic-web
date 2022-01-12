@@ -1,0 +1,65 @@
+<section class="component-body">
+  <div class="component-wrapper cmpt-wrp">
+    <form [formGroup]="formulario" class="width-full create-account-form">
+      <mat-grid-list cols="2">
+          <div class="example-container">
+            <mat-form-field appearance="outline" class="full-width-field" [style.fontSize.px]="13">
+              <mat-label [style.fontSize.px]="13">CEP: </mat-label>
+              <input matInput formControlName="rua" required mask="00000-000">
+              <mat-error *ngIf="formulario.controls['rua'].invalid">{{'rua obrigatoria'}}</mat-error>
+            </mat-form-field>
+
+          </div>
+      </mat-grid-list>
+
+      <!--<fieldset class="row mx-0 mb-3 mt-4">
+        <div class="col-md-3 col-lg-4">
+          <div class="form-group">
+            <label for="nome" class="input-label">Cep:</label>
+            <input type="text" class="form-control" mask="00000-000" formControlName="cep" name="cep"
+              placeholder="Cep:">
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-5">
+          <div class="form-group">
+            <label for="nome" class="input-label">Logradouro:</label>
+            <input type="text" class="form-control" name="rua" formControlName="rua" placeholder="Logradouro:">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="nome" class="input-label">Nº:</label>
+            <input type="text" class="form-control" name="numero" formControlName="numero" placeholder="Nº:">
+          </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="form-group">
+            <label for="nome" class="input-label">Cidade:</label>
+            <input type="text" class="form-control" name="cidade" formControlName="cidade" placeholder="Cidade:">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="nome" class="input-label">UF:</label>
+            <input type="text" class="form-control" name="uf" formControlName="uf" placeholder="UF:">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="nome" class="input-label">Complemento:</label>
+            <input type="text" class="form-control" name="complementar" formControlName="complementar"
+              placeholder="Complemento:">
+          </div>
+        </div>
+      </fieldset>-->
+      <div class="col-12 text-center align-text-bottom">
+        <button type="button" class="btn btn-primary mx-2">
+          Proximo
+        </button>
+        <button type="button" class="btn btn-secondary">
+          Voltar
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
