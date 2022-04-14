@@ -1,6 +1,6 @@
 <h1 class="pt-3" style="text-align: center;">{{'Cadastrar Paciente'}}</h1>
 <mat-card>
-  <mat-stepper #stepper class="example-form">
+  <mat-stepper #stepper class="example-form" [linear]="true">
     <mat-step [stepControl]="dadosPessoaisForm">
       <form [formGroup]="dadosPessoaisForm">
         <ng-template matStepLabel>Dados Pessoais</ng-template>
@@ -32,9 +32,7 @@
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
               <input matInput [matDatepicker]="picker" placeholder="01/01/1900" formControlName="dataNascimento">
-              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'dataNascimento')">{{"Data de Nasicmento é
-                obrigatório."}}
-              </mat-error>
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'dataNascimento')">{{"Data de Nascimento é obrigatório."}}</mat-error>
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -42,8 +40,9 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Email</mat-label>
-              <input matInput placeholder="exemplo@emai.com" formControlName="email">
-              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'email')">{{"Email é obrigatório."}}</mat-error>
+              <input type="email"  matInput placeholder="exemplo@email.com" formControlName="email">
+              <mat-error *ngIf="isValidated(dadosPessoaisForm, 'email') && !dadosPessoaisForm.get('email')?.value">{{"Email é obrigatório."}}</mat-error>
+              <mat-error *ngIf="verificaEmailValido(dadosPessoaisForm, 'email')">{{"Email inválido."}}</mat-error>
             </mat-form-field>
           </div>
           <div class="col-3">
@@ -86,12 +85,104 @@
             <div class="col-4 margin-bottom">
               Maior de 18 anos?
             </div>
-            <mat-slide-toggle class="margin-bottom" formControlName="maiorIdade"></mat-slide-toggle>
+            <mat-slide-toggle (change)="mostraTemplateDadosResponsavel()" class="margin-bottom" formControlName="maiorIdade"></mat-slide-toggle>
           </div>
         </div>
         <div class="row">
           <div class="col-lg-4" style="padding-left: 26px;">
             <button mat-raised-button matStepperNext color="primary" style="width: 166px;"
+              (click)="nextTabValidation()">Proximo</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="dadosPessoaisResponsavelForm" *ngIf="showResponsavelForm">
+      <form [formGroup]="dadosPessoaisResponsavelForm">
+        <ng-template matStepLabel>Dados Pessoais - Responsável</ng-template>
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Name Completo</mat-label>
+              <input matInput placeholder="" formControlName="nome">
+              <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'nome')">{{"Nome é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">CPF</mat-label>
+              <input matInput mask="000.000.000-00" formControlName="cpf">
+              <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'cpf')">{{"CPF é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">RG<mat-label [style.fontSize.px]="12"> (Opcional) </mat-label>
+              </mat-label>
+              <input matInput mask="AA-00.000.000" placeholder="MG-99.999.999" formControlName="rg">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
+              <input matInput [matDatepicker]="picker" placeholder="01/01/1900" formControlName="dataNascimento">
+              <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'dataNascimento')">{{"Data de Nascimento é obrigatório."}}</mat-error>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Email</mat-label>
+              <input type="email" matInput placeholder="exemplo@email.com" formControlName="email">
+              <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'email')  && !dadosPessoaisForm.get('email')?.value">{{"Email é obrigatório."}}</mat-error>
+              <mat-error *ngIf="verificaEmailValido(dadosPessoaisForm, 'email')">{{"Email inválido."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Celular</mat-label>
+              <input matInput mask="(00) 00000-0000" placeholder="(99) 99999-9999" formControlName="contato">
+              <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'contato')">{{"Celular é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Telefone Fixo <mat-label [style.fontSize.px]="12"> (Opcional)
+                </mat-label>
+              </mat-label>
+              <input matInput mask="(00) 0000-0000" placeholder="(99) 9999-9999" formControlName="contatoFixo">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Gênero</mat-label>
+              <mat-select formControlName="genero">
+                <mat-option *ngFor="let x of generos" [value]="x.value">
+                  {{x.descricao}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'genero')">{{"Gênero é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Profissão <mat-label [style.fontSize.px]="12"> (Opcional)
+                </mat-label>
+              </mat-label>
+              <input matInput placeholder="Autônomo" formControlName="profissao">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3" style="padding-left: 26px;">
+            <button type="button" mat-button matStepperPrevious color="accent" style="width: 166px;">Voltar</button>
+          </div>
+          <div class="col-lg-3">
+            <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;"
               (click)="nextTabValidation()">Proximo</button>
           </div>
         </div>

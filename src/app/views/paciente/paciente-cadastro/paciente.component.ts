@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, Observable, switchMap } from 'rxjs';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { map, switchMap } from 'rxjs';
 import { Cidade } from 'src/app/models/common-models/cidade.interface';
 import { Estado } from 'src/app/models/common-models/estados.interface';
 import { Generos } from 'src/app/models/common-models/generos.interface';
@@ -18,6 +18,8 @@ export class PacienteComponent implements OnInit {
   dadosPessoaisForm!: FormGroup;
   enderecoForm!: FormGroup;
   informacoesForm!: FormGroup;
+  dadosPessoaisResponsavelForm!: FormGroup;
+  showResponsavelForm: boolean = true;
 
   generos: Generos[] = [];
   estados: Estado[] = [];
@@ -58,7 +60,7 @@ export class PacienteComponent implements OnInit {
   buildFormGroup() {
     this.dadosPessoaisForm = this.formBuilder.group({
       nome: ['', Validators.required],
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       cpf: ['', Validators.required],
       dataNascimento: ['', Validators.required],
       contato: ['', Validators.required],
@@ -67,6 +69,18 @@ export class PacienteComponent implements OnInit {
       contatoFixo: [''],
       profissao: [''],
       maiorIdade: [''],
+    });
+
+    this.dadosPessoaisResponsavelForm = this.formBuilder.group({
+      nome: ['', Validators.required],
+      email: ['', Validators.required, Validators.email],
+      cpf: ['', Validators.required],
+      dataNascimento: ['', Validators.required],
+      contato: ['', Validators.required],
+      genero: ['', Validators.required],
+      rg: [''],
+      contatoFixo: [''],
+      profissao: [''],
     });
 
     this.enderecoForm = this.formBuilder.group({
@@ -89,9 +103,54 @@ export class PacienteComponent implements OnInit {
     return formulario.get(field)?.invalid && (formulario.get(field)?.dirty || formulario.get(field)?.touched);
   }
 
+  verificaEmailValido(formulario: FormGroup, field: string){
+    return formulario.get(field)?.hasError('email');
+  }
+
   nextTabValidation() {
-      console.log(this.dadosPessoaisForm.value)
-      console.log(this.enderecoForm.value)
+    console.log(this.dadosPessoaisForm.controls);
+    if (!this.dadosPessoaisForm.valid || !this.dadosPessoaisResponsavelForm.valid || !this.enderecoForm.valid) {
+      CommonUtils.validateAllFields(this.dadosPessoaisForm);
+    }
+  }
+
+  mostraTemplateDadosResponsavel(){
+    this.showResponsavelForm = !this.showResponsavelForm
+    if(this.dadosPessoaisForm.get('maiorIdade')?.value == false){
+      this.adicionaValidatorsForm();
+    } else {
+      this.clearValidatorsForm();
+    }
+  }
+
+  adicionaValidatorsForm(){
+    this.setValidator(this.dadosPessoaisResponsavelForm.controls['nome'])
+    this.setValidator(this.dadosPessoaisResponsavelForm.controls['email'])
+    this.setValidator(this.dadosPessoaisResponsavelForm.controls['cpf'])
+    this.setValidator(this.dadosPessoaisResponsavelForm.controls['dataNascimento'])
+    this.setValidator(this.dadosPessoaisResponsavelForm.controls['contato'])
+    this.setValidator(this.dadosPessoaisResponsavelForm.controls['genero'])
+  }
+
+  clearValidatorsForm(){
+    this.resetValidator(this.dadosPessoaisResponsavelForm.controls['nome'])
+    this.resetValidator(this.dadosPessoaisResponsavelForm.controls['email'])
+    this.resetValidator(this.dadosPessoaisResponsavelForm.controls['cpf'])
+    this.resetValidator(this.dadosPessoaisResponsavelForm.controls['dataNascimento'])
+    this.resetValidator(this.dadosPessoaisResponsavelForm.controls['contato'])
+    this.resetValidator(this.dadosPessoaisResponsavelForm.controls['genero'])
+  }
+
+  private resetValidator(form: AbstractControl){
+      form.clearValidators();
+      form.reset();
+      form.updateValueAndValidity();
+  }
+
+  private setValidator(form: AbstractControl){
+    form.setValidators([Validators.required])
+    form.reset();
+    form.updateValueAndValidity();
   }
 
   consultaCep() {
@@ -115,7 +174,7 @@ export class PacienteComponent implements OnInit {
   }
 
   salvar() {
-    if (!this.dadosPessoaisForm.valid || !this.enderecoForm.valid) {
+    if (!this.dadosPessoaisForm.valid) {
       CommonUtils.validateAllFields(this.dadosPessoaisForm);
     }
   }
