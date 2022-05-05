@@ -1,10 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LayoutComponent } from 'src/app/template/layout/layout.component';
 import { AtendimentoComponent } from './atendimento-cadastro/atendimento.component';
 
 
 const routes: Routes = [
-  { path: 'cadastroAtendimento', component: AtendimentoComponent }
+  {
+    path: 'atendimento', component: LayoutComponent, children: [
+      { path: 'cadastroAtendimento', component: AtendimentoComponent }
+    ]
+  },
 ];
 
 @NgModule({

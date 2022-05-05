@@ -31,10 +31,10 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
-              <input matInput [matDatepicker]="picker" placeholder="01/01/1900" formControlName="dataNascimento">
+              <input id="dataNascimentoPaciente" matInput [matDatepicker]="pickerNascimentoPaciente" placeholder="01/01/1900" formControlName="dataNascimento">
               <mat-error *ngIf="isValidated(dadosPessoaisForm, 'dataNascimento')">{{"Data de Nascimento é obrigatório."}}</mat-error>
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+              <mat-datepicker-toggle matSuffix [for]="pickerNascimentoPaciente"></mat-datepicker-toggle>
+              <mat-datepicker #pickerNascimentoPaciente></mat-datepicker>
             </mat-form-field>
           </div>
           <div class="col-3">
@@ -126,10 +126,10 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
-              <input matInput [matDatepicker]="picker" placeholder="01/01/1900" formControlName="dataNascimento">
+              <input id="dataNascimento" matInput [matDatepicker]="pickerNascimento" placeholder="01/01/1900" formControlName="dataNascimento">
               <mat-error *ngIf="isValidated(dadosPessoaisResponsavelForm, 'dataNascimento')">{{"Data de Nascimento é obrigatório."}}</mat-error>
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+              <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
+              <mat-datepicker #pickerNascimento></mat-datepicker>
             </mat-form-field>
           </div>
           <div class="col-3">
