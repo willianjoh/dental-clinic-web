@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ export class LoginComponent implements OnInit {
   loginError: boolean = false;
   cadastrando: boolean = false;
 
-  constructor(private formBuilder: FormBuilder,) { }
+  constructor(private formBuilder: FormBuilder, private router: Router) { }
 
   ngOnInit() {
     this.buildFormGroup()
@@ -24,14 +25,16 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onSubmit() { }
+  onSubmit() {
+    this.router.navigate(['/home'])
+  }
 
-  cadastrandoNovo(event: any){
+  cadastrandoNovo(event: any) {
     event.preventDefault();
     this.cadastrando = true;
   }
 
-  cancelaCadastro(){
+  cancelaCadastro() {
     this.cadastrando = false
   }
 

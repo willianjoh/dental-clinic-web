@@ -14,6 +14,7 @@ import { PacienteModule } from './views/paciente/paciente.module';
 import { AtendimentoModule } from './views/atendimento/atendimento.module';
 import { LoginComponent } from './views/login/login.component';
 import { SharedModule } from './shared/shared.module';
+import { LayoutComponent } from './template/layout/layout.component';
 
 
 
@@ -33,7 +34,8 @@ export const DateFormat = {
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
