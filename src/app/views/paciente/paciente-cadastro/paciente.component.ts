@@ -108,7 +108,6 @@ export class PacienteComponent implements OnInit {
   }
 
   nextTabValidation() {
-    console.log(this.dadosPessoaisForm.controls);
     if (!this.dadosPessoaisForm.valid || !this.dadosPessoaisResponsavelForm.valid || !this.enderecoForm.valid) {
       CommonUtils.validateAllFields(this.dadosPessoaisForm);
     }

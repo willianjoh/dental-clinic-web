@@ -11,6 +11,9 @@ import { MaterialModule } from './shared/material/material.module';
 import { HomeComponent } from './template/home/home.component';
 import { TemplateModule } from './template/template.module';
 import { PacienteModule } from './views/paciente/paciente.module';
+import { AtendimentoModule } from './views/atendimento/atendimento.module';
+import { LoginComponent } from './views/login/login.component';
+import { SharedModule } from './shared/shared.module';
 
 
 
@@ -30,7 +33,7 @@ export const DateFormat = {
   declarations: [
     AppComponent,
     HomeComponent,
-
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -38,9 +41,11 @@ export const DateFormat = {
     ReactiveFormsModule,
     FormsModule,
     PacienteModule,
+    AtendimentoModule,
     TemplateModule,
     BrowserAnimationsModule,
     MaterialModule,
+    SharedModule
   ],
 
   providers: [
