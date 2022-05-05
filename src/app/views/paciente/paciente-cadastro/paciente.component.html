@@ -183,7 +183,7 @@
           </div>
           <div class="col-lg-3">
             <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;"
-              (click)="nextTabValidation()">Proximo</button>
+              >Proximo</button>
           </div>
         </div>
       </form>
@@ -275,9 +275,14 @@
             </mat-form-field>
           </div>
         </div>
-        <div>
-          <button mat-button matStepperPrevious>Voltar</button>
-          <button mat-button (click)="salvar()">Salvar</button>
+        <div class="row">
+          <div class="col-lg-3" style="padding-left: 26px;">
+            <button type="button" mat-button matStepperPrevious color="accent" style="width: 166px;">Voltar</button>
+          </div>
+          <div class="col-lg-3">
+            <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;"
+            (click)="salvar()">Salvar</button>
+          </div>
         </div>
       </form>
     </mat-step>

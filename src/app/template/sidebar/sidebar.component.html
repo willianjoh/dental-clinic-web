@@ -20,6 +20,24 @@
             </div>
           </nav>
         </div>
+        <a class="nav-link collapsed margin-top" href="#" data-toggle="collapse" data-target="#collapseLayoutsAtentimentos"
+          aria-expanded="false" aria-controls="collapseLayoutsAtentimentos">
+          <div class="sb-nav-link-icon"><i class="bi bi-people"></i></div>
+          Atendimentos
+          <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseLayoutsAtentimentos" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+          <nav class="sb-sidenav-menu-nested nav">
+            <div class=" nav-link sb-nav-link-icon">
+              <i class="bi bi-plus-circle"></i>
+              <a class="nav-link" [routerLink]="['/cadastroAtendimento']" routerLinkActive="router-link-active" >Cadastrar</a>
+            </div>
+            <div class=" nav-link sb-nav-link-icon">
+              <i class="bi bi-person-lines-fill"></i>
+              <a class="nav-link" href="layout-static.html">Consultar Todos</a>
+            </div>
+          </nav>
+        </div>
         <a class="nav-link collapsed margin-top" href="#" data-toggle="collapse" data-target="#collapseLayoutsDocuments"
           aria-expanded="false" aria-controls="collapseLayoutsDocuments">
           <div class="sb-nav-link-icon"><i class="bi bi-stickies"></i></div>
