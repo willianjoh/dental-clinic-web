@@ -15,6 +15,7 @@ import { AtendimentoModule } from './views/atendimento/atendimento.module';
 import { LoginComponent } from './views/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { LayoutComponent } from './template/layout/layout.component';
+import { AuthService } from './auth.service';
 
 
 
@@ -53,7 +54,8 @@ export const DateFormat = {
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     ConsultaCepService,
-    DropdownService
+    DropdownService,
+    AuthService
   ],
 
   bootstrap: [AppComponent]

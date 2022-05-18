@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../auth.service';
+import { Usuario } from './../../models/common-models/usuario.interface';
 
 @Component({
   selector: 'app-login',
@@ -11,8 +14,10 @@ export class LoginComponent implements OnInit {
   formLogin!: FormGroup;
   loginError: boolean = false;
   cadastrando: boolean = false;
+  loginSucesso: string = "";
+  errors: string = "";
 
-  constructor(private formBuilder: FormBuilder, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     this.buildFormGroup()
@@ -20,13 +25,23 @@ export class LoginComponent implements OnInit {
 
   buildFormGroup() {
     this.formLogin = this.formBuilder.group({
-      login: [''],
-      senha: [''],
+      login: ['', Validators.required],
+      senha: ['', Validators.required],
     });
   }
 
   onSubmit() {
-    this.router.navigate(['/home'])
+    if(this.formLogin.valid){
+      const param = this.formatUser(this.formLogin);
+      this.authService.login(param).subscribe(res =>{
+        console.log(res)
+        this.router.navigate(['/home'])
+      }, error => {
+        this.errors = "Login e/ou senha incorretos."
+      })
+    } else {
+      alert("Campos obrigatórios não preenchidos.")
+    }
   }
 
   cadastrandoNovo(event: any) {
@@ -38,5 +53,37 @@ export class LoginComponent implements OnInit {
     this.cadastrando = false
   }
 
+  cadastrar() {
+    if(this.formLogin.valid){
+      const param = this.formatUser(this.formLogin);
+      this.authService.salvarUsuario(param).pipe(
+        finalize(() => {}),
+      ).subscribe((resp) => {
+        this.loginSucesso = "Cadastro Efetuado com sucesso! Efetue o Login."
+        this.loginError = false;
+        this.cadastrando = false
+      },
+        errorResponse => {
+          this.errors = errorResponse.error.message;
+          this.loginError = true;
+          this.loginSucesso = "";
+          this.formLogin.reset();
+        });
+    } else {
+      alert("Campos obrigatórios não preenchidos.")
+    }
+  }
+
+  formatUser(form: FormGroup): Usuario {
+    const value = form.value
+    return {
+      userName: value.login,
+      senha: value.senha
+    };
+  }
+
+  isValidated(formulario: FormGroup, field: string) {
+    return formulario.get(field)?.invalid && (formulario.get(field)?.dirty || formulario.get(field)?.touched);
+  }
 }
 
