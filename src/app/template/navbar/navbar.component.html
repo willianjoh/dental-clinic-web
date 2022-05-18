@@ -1,7 +1,17 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
   <a class="navbar-brand" href="#">Dental Clinic</a>
-  <button class="btn btn-link btn-sm order-1 order-lg-0"
-          id="sidebarToggle" href="#">
-      <i class="fas fa-bars"></i>
-  </button>
+  <div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <div class="button-exit">
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="exit" (click)="logout()" href="#">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </nav>

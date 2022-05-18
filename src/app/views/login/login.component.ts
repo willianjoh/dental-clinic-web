@@ -31,17 +31,26 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.formLogin.valid){
+    this.clearLocalStorage();
+    if (this.formLogin.valid) {
       const param = this.formatUser(this.formLogin);
-      this.authService.login(param).subscribe(res =>{
-        console.log(res)
-        this.router.navigate(['/home'])
-      }, error => {
-        this.errors = "Login e/ou senha incorretos."
-      })
+      this.authService.login(param)
+        .subscribe(res => {
+
+          const access_token = JSON.stringify(res)
+          localStorage.setItem('access_token', access_token)
+          this.router.navigate(['/home'])
+        }, error => {
+          this.loginError = true;
+          this.errors = "Login e/ou senha incorretos."
+        })
     } else {
       alert("Campos obrigatórios não preenchidos.")
     }
+  }
+
+  clearLocalStorage(){
+    localStorage.removeItem('access_token')
   }
 
   cadastrandoNovo(event: any) {
@@ -54,10 +63,10 @@ export class LoginComponent implements OnInit {
   }
 
   cadastrar() {
-    if(this.formLogin.valid){
+    if (this.formLogin.valid) {
       const param = this.formatUser(this.formLogin);
       this.authService.salvarUsuario(param).pipe(
-        finalize(() => {}),
+        finalize(() => { }),
       ).subscribe((resp) => {
         this.loginSucesso = "Cadastro Efetuado com sucesso! Efetue o Login."
         this.loginError = false;

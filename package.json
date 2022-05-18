@@ -22,6 +22,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
+    "@auth0/angular-jwt": "^5.0.2",
     "@swimlane/ngx-datatable": "^20.0.0",
     "bootstrap": "^4.6.1",
     "bootstrap-icons": "^1.7.2",
