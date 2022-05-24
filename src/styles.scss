@@ -10595,6 +10595,13 @@ body {
   color: #343a40;
 }
 
+.sb-topnav.navbar-dark #exit {
+  color: rgba(255, 255, 255, 0.9);
+}
+.sb-topnav.navbar-light #exit {
+  color: #343a40;
+}
+
 .sb-sidenav {
   display: flex;
   flex-direction: column;

@@ -6,7 +6,10 @@ import { Estado } from 'src/app/models/common-models/estados.interface';
 import { Generos } from 'src/app/models/common-models/generos.interface';
 import { ConsultaCepService } from 'src/app/services/consulta-cep.service';
 import { DropdownService } from 'src/app/services/dropdown.service';
+import { PacienteService } from 'src/app/services/paicente.service';
 import { CommonUtils } from '../../../util/common-utils';
+import { Paciente } from '../../../models/common-models/paciente.interface';
+import { Endereco } from '../../../models/common-models/endereco.interface';
 
 @Component({
   selector: 'app-paciente',
@@ -27,6 +30,7 @@ export class PacienteComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private cepService: ConsultaCepService,
+    private pacienteService: PacienteService,
     private dropdownService: DropdownService) {
   }
 
@@ -37,13 +41,13 @@ export class PacienteComponent implements OnInit {
     this.getCidadesPorEstado();
   }
 
-  private getCidadesPorEstado(){
+  private getCidadesPorEstado() {
     this.enderecoForm.controls['estado'].valueChanges
-    .pipe(
-      map(estado => this.estados.filter(e => e.sigla === estado)),
-      map(estados => estados && estados.length > 0 ? estados[0].id : 0),
-      switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
-    ).subscribe(cidades => this.cidades = cidades);
+      .pipe(
+        map(estado => this.estados.filter(e => e.sigla === estado)),
+        map(estados => estados && estados.length > 0 ? estados[0].id : 0),
+        switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+      ).subscribe(cidades => this.cidades = cidades);
   }
 
   private getGeneros() {
@@ -103,7 +107,7 @@ export class PacienteComponent implements OnInit {
     return formulario.get(field)?.invalid && (formulario.get(field)?.dirty || formulario.get(field)?.touched);
   }
 
-  verificaEmailValido(formulario: FormGroup, field: string){
+  verificaEmailValido(formulario: FormGroup, field: string) {
     return formulario.get(field)?.hasError('email');
   }
 
@@ -113,16 +117,22 @@ export class PacienteComponent implements OnInit {
     }
   }
 
-  mostraTemplateDadosResponsavel(){
+  nextTabValidationResp() {
+    if (!this.dadosPessoaisResponsavelForm.valid) {
+      CommonUtils.validateAllFields(this.dadosPessoaisResponsavelForm);
+    }
+  }
+
+  mostraTemplateDadosResponsavel() {
     this.showResponsavelForm = !this.showResponsavelForm
-    if(this.dadosPessoaisForm.get('maiorIdade')?.value == false){
+    if (this.dadosPessoaisForm.get('maiorIdade')?.value == false) {
       this.adicionaValidatorsForm();
     } else {
       this.clearValidatorsForm();
     }
   }
 
-  adicionaValidatorsForm(){
+  adicionaValidatorsForm() {
     this.setValidator(this.dadosPessoaisResponsavelForm.controls['nome'])
     this.setValidator(this.dadosPessoaisResponsavelForm.controls['email'])
     this.setValidator(this.dadosPessoaisResponsavelForm.controls['cpf'])
@@ -131,7 +141,7 @@ export class PacienteComponent implements OnInit {
     this.setValidator(this.dadosPessoaisResponsavelForm.controls['genero'])
   }
 
-  clearValidatorsForm(){
+  clearValidatorsForm() {
     this.resetValidator(this.dadosPessoaisResponsavelForm.controls['nome'])
     this.resetValidator(this.dadosPessoaisResponsavelForm.controls['email'])
     this.resetValidator(this.dadosPessoaisResponsavelForm.controls['cpf'])
@@ -140,13 +150,13 @@ export class PacienteComponent implements OnInit {
     this.resetValidator(this.dadosPessoaisResponsavelForm.controls['genero'])
   }
 
-  private resetValidator(form: AbstractControl){
-      form.clearValidators();
-      form.reset();
-      form.updateValueAndValidity();
+  private resetValidator(form: AbstractControl) {
+    form.clearValidators();
+    form.reset();
+    form.updateValueAndValidity();
   }
 
-  private setValidator(form: AbstractControl){
+  private setValidator(form: AbstractControl) {
     form.setValidators([Validators.required])
     form.reset();
     form.updateValueAndValidity();
@@ -173,8 +183,64 @@ export class PacienteComponent implements OnInit {
   }
 
   salvar() {
+    console.log(this.dadosPessoaisForm.value)
     if (!this.dadosPessoaisForm.valid) {
       CommonUtils.validateAllFields(this.dadosPessoaisForm);
+      return
+    } else {
+      const param = this.formatParam()
+      this.pacienteService.salvar(param).pipe(
+
+      ).subscribe(resp => {
+        if(resp.id != null){
+          alert("Paciente cadastrado com sucesso!")
+        } else {
+          if(resp.id != null){
+            alert("Não foi possivel realizar o cadastro!")
+          }
+        }
+      })
+    }
+  }
+
+  formatParam(): Paciente {
+    let responsavel;
+    if(this.dadosPessoaisForm.get('maiorIdade')?.value){
+      responsavel = {
+        nomeCompleto: this.dadosPessoaisResponsavelForm.get('nome')?.value,
+        email: this.dadosPessoaisResponsavelForm.get('email')?.value,
+        cpf: this.dadosPessoaisResponsavelForm.get('cpf')?.value,
+        dataNascimento: this.dadosPessoaisResponsavelForm.get('dataNascimento')?.value,
+        celular: this.dadosPessoaisResponsavelForm.get('contato')?.value,
+        telefoneFixo: this.dadosPessoaisResponsavelForm.get('contatoFixo')?.value,
+        rg: this.dadosPessoaisResponsavelForm.get('rg')?.value,
+        profissao: this.dadosPessoaisResponsavelForm.get('profissao')?.value,
+        genero: this.dadosPessoaisResponsavelForm.get('genero')?.value,
+      }
+    }
+    const endereco: Endereco = {
+      cep: this.enderecoForm.get('cep')?.value,
+      logradouro: this.enderecoForm.get('logradouro')?.value,
+      bairro: this.enderecoForm.get('bairro')?.value,
+      cidade: this.enderecoForm.get('cidade')?.value,
+      numero: this.enderecoForm.get('numero')?.value,
+      complemento: this.enderecoForm.get('complemento')?.value,
+      uf: this.enderecoForm.get('estado')?.value
+    }
+    return {
+      nomeCompleto: this.dadosPessoaisForm.get('nome')?.value,
+      email: this.dadosPessoaisForm.get('email')?.value,
+      cpf: this.dadosPessoaisForm.get('cpf')?.value,
+      dataNascimento: this.dadosPessoaisForm.get('dataNascimento')?.value,
+      celular: this.dadosPessoaisForm.get('contato')?.value,
+      telefoneFixo: this.dadosPessoaisForm.get('contatoFixo')?.value,
+      rg: this.dadosPessoaisForm.get('rg')?.value,
+      profissao: this.dadosPessoaisForm.get('profissao')?.value,
+      genero: this.dadosPessoaisForm.get('genero')?.value,
+      maiorIdade: this.dadosPessoaisForm.get('maiorIdade')?.value == true ? 1 : 0,
+      responsavel: responsavel ?? null,
+      endereco: endereco,
+      informacoesAdicionais: this.informacoesForm.get('info')?.value,
     }
   }
 }

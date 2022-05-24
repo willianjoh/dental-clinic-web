@@ -15,6 +15,9 @@ import { AtendimentoModule } from './views/atendimento/atendimento.module';
 import { LoginComponent } from './views/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { LayoutComponent } from './template/layout/layout.component';
+import { AuthService } from './auth.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './token.interceptor';
 
 
 
@@ -51,9 +54,15 @@ export const DateFormat = {
   ],
 
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    AuthService,
+    DropdownService,
     ConsultaCepService,
-    DropdownService
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
 
   bootstrap: [AppComponent]
