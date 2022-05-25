@@ -49,7 +49,10 @@ export class PacienteListagemComponent implements OnInit {
 
   deletar(){
     this.pacienteService.deletar(this.selected.id)
-    .subscribe(resp =>{})
+    .subscribe(resp =>{
+      alert("Paciente deletado com sucesso!")
+      this.buscar()
+    })
   }
 
   editar(){

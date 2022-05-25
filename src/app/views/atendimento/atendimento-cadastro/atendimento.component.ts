@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { PacienteService } from 'src/app/services/paciente.service';
 import { Atendimento } from '../../../models/common-models/atendimento.interface';
-import { Paciente } from '../../../models/common-models/paciente.interface';
 import { AtendimentoService } from '../../../services/atendimento.service';
+import { Paciente } from '../../../models/common-models/paciente.interface';
 
 @Component({
   selector: 'app-atendimento',
@@ -11,13 +12,42 @@ import { AtendimentoService } from '../../../services/atendimento.service';
   styleUrls: ['./atendimento.component.scss']
 })
 export class AtendimentoComponent implements OnInit {
+  tittle = "Cadastrar Atendimento"
+
   dadosPessoaisForm!: FormGroup;
   dadosAtendimentoForm!: FormGroup;
   informacoesForm!: FormGroup;
-  paciente!: Paciente;
+  atendimento!: Atendimento;
+  atendimentoId: any;
+  paciente!: Paciente
+
   constructor(private formBuilder: FormBuilder,
     private pacienteService: PacienteService,
-    private atendimentoService: AtendimentoService) { }
+    private atendimentoService: AtendimentoService,
+    private route: ActivatedRoute) {
+    this.route.params.subscribe(params => this.atendimentoId = params['id']);
+    if (this.atendimentoId) {
+      this.tittle = "Editar Atendimento"
+      this.getAtendimento()
+    }
+  }
+
+  getAtendimento(){
+    this.atendimentoService.getAtendimentoById(this.atendimentoId)
+    .subscribe(resp =>{
+        this.atendimento = resp
+        this.dadosPessoaisForm.patchValue({
+          cpf: this.atendimento.cpfPaciente,
+        })
+        this.dadosAtendimentoForm.patchValue({
+          dataAtendimento: this.atendimento.dataAtendimento,
+          horario: this.atendimento.horario,
+          local: this.atendimento.local
+        })
+        this.dadosPessoaisForm.controls['cpf'].disable()
+        this.consultarPorCPF()
+    })
+  }
 
   ngOnInit() {
     this.buildFormGroup()
@@ -53,7 +83,7 @@ export class AtendimentoComponent implements OnInit {
     const cpf = this.dadosPessoaisForm.controls['cpf'].value
     if (cpf) {
       this.pacienteService.consultarPorCPF(cpf).subscribe(resp => {
-        if(resp){
+        if (resp) {
           this.paciente = resp
           this.setValueForm(resp)
         } else {
@@ -65,17 +95,30 @@ export class AtendimentoComponent implements OnInit {
   }
 
   salvar() {
-    const param = this.formatParam()
-    if (this.dadosPessoaisForm.valid && this.dadosAtendimentoForm.valid) {
-      this.atendimentoService.salvar(param).subscribe(resp => {
-        if (resp.id != null) {
-          alert("Atendimento cadastrado com sucesso!")
-        } else {
+    if(this.atendimento?.id){
+      const param = this.formatParam()
+        this.atendimentoService.editar(param, this.atendimentoId).subscribe(resp => {
           if (resp.id != null) {
-            alert("Não foi possivel realizar o cadastro!")
+            alert("Atendimento atualizado com sucesso!")
+          } else {
+            if (resp.id != null) {
+              alert("Não foi possivel realizar o cadastro!")
+            }
           }
-        }
-      })
+        })
+    } else {
+      const param = this.formatParam()
+      if (this.dadosPessoaisForm.valid && this.dadosAtendimentoForm.valid) {
+        this.atendimentoService.salvar(param).subscribe(resp => {
+          if (resp.id != null) {
+            alert("Atendimento cadastrado com sucesso!")
+          } else {
+            if (resp.id != null) {
+              alert("Não foi possivel realizar o cadastro!")
+            }
+          }
+        })
+      }
     }
 
   }

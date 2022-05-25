@@ -28,6 +28,7 @@ export class PacienteService {
   getPacienteById(id: any): Observable<Paciente> {
     return this.http.get<Paciente>(this.apiURL + '/buscarPorId?id=' + id)
   }
+
   deletar(id: any): Observable<Paciente> {
     return this.http.get<Paciente>(this.apiURL + '/deletar?id=' + id)
   }

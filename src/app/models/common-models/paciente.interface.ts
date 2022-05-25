@@ -11,7 +11,7 @@ export interface Paciente {
   profissao: string;
   telefoneFixo: string;
   endereco: Endereco;
-  maiorIdade: number;
+  maiorIdade: boolean;
   responsavel?: any;
   informacoesAdicionais: string;
 }

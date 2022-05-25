@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MaterialModule } from 'src/app/shared/material/material.module';
+import { AtendimentoListagemComponent } from './atendimento-listagem/atendimento-listagem.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { MaterialModule } from 'src/app/shared/material/material.module';
     SharedModule,
     MaterialModule,
   ],
-  declarations: [AtendimentoComponent]
+  declarations: [AtendimentoComponent, AtendimentoListagemComponent]
 })
 export class AtendimentoModule { }

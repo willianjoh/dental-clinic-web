@@ -75,7 +75,7 @@ export class PacienteComponent implements OnInit {
       this.informacoesForm.controls['info'].setValue(resp.informacoesAdicionais)
 
       this.consultaCep()
-      if(resp.maiorIdade == 1){
+      if(resp.maiorIdade){
         this.dadosPessoaisForm.controls['maiorIdade'].setValue(true)
        this.mostraTemplateDadosResponsavel()
       } else {
@@ -215,14 +215,14 @@ export class PacienteComponent implements OnInit {
   }
 
   salvar() {
-    if(this.paciente.id){
+    if(this.paciente?.id){
       const param = this.formatParam()
       this.pacienteService.editar(param, this.paciente.id).pipe(
       ).subscribe(resp => {
         if (resp.id != null) {
           alert("Paciente atualizado com sucesso!")
         } else {
-          if (resp.id != null) {
+          if (resp.id == null) {
             alert("Não foi possivel realizar o cadastro!")
           }
         }
@@ -239,7 +239,7 @@ export class PacienteComponent implements OnInit {
           if (resp.id != null) {
             alert("Paciente cadastrado com sucesso!")
           } else {
-            if (resp.id != null) {
+            if (resp.id == null) {
               alert("Não foi possivel realizar o cadastro!")
             }
           }
@@ -282,7 +282,7 @@ export class PacienteComponent implements OnInit {
       rg: this.dadosPessoaisForm.get('rg')?.value,
       profissao: this.dadosPessoaisForm.get('profissao')?.value,
       genero: this.dadosPessoaisForm.get('genero')?.value,
-      maiorIdade: this.dadosPessoaisForm.get('maiorIdade')?.value == true ? 1 : 0,
+      maiorIdade: this.dadosPessoaisForm.get('maiorIdade')?.value,
       responsavel: responsavel ?? null,
       endereco: endereco,
       informacoesAdicionais: this.informacoesForm.get('info')?.value,
