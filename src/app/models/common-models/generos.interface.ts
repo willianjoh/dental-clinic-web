@@ -1,4 +1,4 @@
 export interface Generos {
-  value: number;
+  value: string;
   descricao: string;
 }

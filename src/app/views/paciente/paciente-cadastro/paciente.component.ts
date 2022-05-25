@@ -6,10 +6,11 @@ import { Estado } from 'src/app/models/common-models/estados.interface';
 import { Generos } from 'src/app/models/common-models/generos.interface';
 import { ConsultaCepService } from 'src/app/services/consulta-cep.service';
 import { DropdownService } from 'src/app/services/dropdown.service';
-import { PacienteService } from 'src/app/services/paicente.service';
+import { PacienteService } from 'src/app/services/paciente.service';
 import { CommonUtils } from '../../../util/common-utils';
 import { Paciente } from '../../../models/common-models/paciente.interface';
 import { Endereco } from '../../../models/common-models/endereco.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-paciente',
@@ -17,12 +18,15 @@ import { Endereco } from '../../../models/common-models/endereco.interface';
   styleUrls: ['./paciente.component.scss']
 })
 export class PacienteComponent implements OnInit {
-
+  tittle = "Cadastrar Paciente"
   dadosPessoaisForm!: FormGroup;
   enderecoForm!: FormGroup;
   informacoesForm!: FormGroup;
   dadosPessoaisResponsavelForm!: FormGroup;
   showResponsavelForm: boolean = true;
+  pacienteId!: number;
+  paciente!: Paciente;
+  endereco!: Endereco;
 
   generos: Generos[] = [];
   estados: Estado[] = [];
@@ -31,7 +35,13 @@ export class PacienteComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private cepService: ConsultaCepService,
     private pacienteService: PacienteService,
-    private dropdownService: DropdownService) {
+    private dropdownService: DropdownService,
+    private route: ActivatedRoute) {
+    this.route.params.subscribe(params => this.pacienteId = params['id']);
+    if (this.pacienteId) {
+      this.tittle = "Editar Paciente"
+      this.getPaciente()
+    }
   }
 
   ngOnInit() {
@@ -39,6 +49,40 @@ export class PacienteComponent implements OnInit {
     this.getGeneros();
     this.getEstados();
     this.getCidadesPorEstado();
+  }
+
+  getPaciente() {
+    this.pacienteService.getPacienteById(this.pacienteId)
+    .subscribe(resp => {
+      this.paciente = resp
+      this.paciente.cpf = CommonUtils.formataCPF(resp.cpf);
+      this.paciente.celular = resp.celular.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3")
+      this.paciente.telefoneFixo = resp.telefoneFixo.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3")
+      this.endereco = resp.endereco
+      this.dadosPessoaisForm.controls['nome'].setValue(resp.nomeCompleto)
+      this.dadosPessoaisForm.controls['email'].setValue(resp.email)
+      this.dadosPessoaisForm.controls['cpf'].setValue(this.paciente.cpf)
+      this.dadosPessoaisForm.controls['dataNascimento'].setValue(resp.dataNascimento)
+      this.dadosPessoaisForm.controls['contato'].setValue(this.paciente.celular)
+      this.dadosPessoaisForm.controls['genero'].setValue(resp.genero)
+      this.dadosPessoaisForm.controls['rg'].setValue(this.paciente.rg)
+      this.dadosPessoaisForm.controls['contatoFixo'].setValue(this.paciente.telefoneFixo)
+      this.dadosPessoaisForm.controls['contatoFixo'].setValue(this.paciente.telefoneFixo)
+      this.dadosPessoaisForm.controls['profissao'].setValue(this.paciente.profissao)
+      this.enderecoForm.controls['cep'].setValue(resp.endereco.cep)
+      this.enderecoForm.controls['numero'].setValue(resp.endereco.numero)
+      this.enderecoForm.controls['complemento'].setValue(resp.endereco.complemento)
+      this.informacoesForm.controls['info'].setValue(resp.informacoesAdicionais)
+
+      this.consultaCep()
+      if(resp.maiorIdade == 1){
+        this.dadosPessoaisForm.controls['maiorIdade'].setValue(true)
+       this.mostraTemplateDadosResponsavel()
+      } else {
+        this.dadosPessoaisForm.controls['maiorIdade'].setValue(false)
+       this.mostraTemplateDadosResponsavel()
+      }
+    })
   }
 
   private getCidadesPorEstado() {
@@ -52,8 +96,8 @@ export class PacienteComponent implements OnInit {
 
   private getGeneros() {
     this.generos = [
-      { value: 1, descricao: 'Masculino' },
-      { value: 2, descricao: 'Feminino' }
+      { value: "1", descricao: 'Masculino' },
+      { value: "2", descricao: 'Feminino' }
     ];
   }
   private getEstados() {
@@ -111,21 +155,9 @@ export class PacienteComponent implements OnInit {
     return formulario.get(field)?.hasError('email');
   }
 
-  nextTabValidation() {
-    if (!this.dadosPessoaisForm.valid || !this.dadosPessoaisResponsavelForm.valid || !this.enderecoForm.valid) {
-      CommonUtils.validateAllFields(this.dadosPessoaisForm);
-    }
-  }
-
-  nextTabValidationResp() {
-    if (!this.dadosPessoaisResponsavelForm.valid) {
-      CommonUtils.validateAllFields(this.dadosPessoaisResponsavelForm);
-    }
-  }
-
   mostraTemplateDadosResponsavel() {
     this.showResponsavelForm = !this.showResponsavelForm
-    if (this.dadosPessoaisForm.get('maiorIdade')?.value == false) {
+    if (this.dadosPessoaisForm.controls['maiorIdade'].value == false) {
       this.adicionaValidatorsForm();
     } else {
       this.clearValidatorsForm();
@@ -183,29 +215,42 @@ export class PacienteComponent implements OnInit {
   }
 
   salvar() {
-    console.log(this.dadosPessoaisForm.value)
-    if (!this.dadosPessoaisForm.valid) {
-      CommonUtils.validateAllFields(this.dadosPessoaisForm);
-      return
-    } else {
+    if(this.paciente.id){
       const param = this.formatParam()
-      this.pacienteService.salvar(param).pipe(
-
+      this.pacienteService.editar(param, this.paciente.id).pipe(
       ).subscribe(resp => {
-        if(resp.id != null){
-          alert("Paciente cadastrado com sucesso!")
+        if (resp.id != null) {
+          alert("Paciente atualizado com sucesso!")
         } else {
-          if(resp.id != null){
+          if (resp.id != null) {
             alert("Não foi possivel realizar o cadastro!")
           }
         }
       })
+    } else {
+      if (!this.dadosPessoaisForm.valid) {
+        CommonUtils.validateAllFields(this.dadosPessoaisForm);
+        return
+      } else {
+        const param = this.formatParam()
+        this.pacienteService.salvar(param).pipe(
+
+        ).subscribe(resp => {
+          if (resp.id != null) {
+            alert("Paciente cadastrado com sucesso!")
+          } else {
+            if (resp.id != null) {
+              alert("Não foi possivel realizar o cadastro!")
+            }
+          }
+        })
+      }
     }
   }
 
   formatParam(): Paciente {
     let responsavel;
-    if(this.dadosPessoaisForm.get('maiorIdade')?.value){
+    if (this.dadosPessoaisForm.get('maiorIdade')?.value) {
       responsavel = {
         nomeCompleto: this.dadosPessoaisResponsavelForm.get('nome')?.value,
         email: this.dadosPessoaisResponsavelForm.get('email')?.value,

@@ -1,6 +1,6 @@
-<h1 class="pt-3" style="text-align: center;">{{'Cadastrar Paciente'}}</h1>
+<h1 class="pt-3" style="text-align: center;">{{tittle}}</h1>
 <mat-card>
-  <mat-stepper #stepper class="example-form" [linear]="true">
+  <mat-stepper #stepper class="example-form" [linear]="false">
     <mat-step [stepControl]="dadosPessoaisForm">
       <form [formGroup]="dadosPessoaisForm">
         <ng-template matStepLabel>Dados Pessoais</ng-template>
@@ -8,14 +8,14 @@
           <div class="col-6">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Name Completo</mat-label>
-              <input matInput placeholder="" formControlName="nome" required>
+              <input matInput placeholder="" formControlName="nome" [value]="paciente?.nomeCompleto">
               <mat-error *ngIf="isValidated(dadosPessoaisForm, 'nome')">{{"Nome é obrigatório."}}</mat-error>
             </mat-form-field>
           </div>
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">CPF</mat-label>
-              <input matInput mask="000.000.000-00" formControlName="cpf" required>
+              <input matInput mask="000.000.000-00" formControlName="cpf"  [value]="paciente?.cpf">
               <mat-error *ngIf="isValidated(dadosPessoaisForm, 'cpf')">{{"CPF é obrigatório."}}</mat-error>
             </mat-form-field>
           </div>
@@ -23,7 +23,7 @@
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">RG<mat-label [style.fontSize.px]="12"> (Opcional) </mat-label>
               </mat-label>
-              <input matInput mask="AA-00.000.000" placeholder="MG-99.999.999" formControlName="rg">
+              <input matInput mask="AA-00.000.000" placeholder="MG-99.999.999"  [value]="paciente?.rg" formControlName="rg">
             </mat-form-field>
           </div>
         </div>
@@ -31,7 +31,7 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
-              <input id="dataNascimentoPaciente" matInput [matDatepicker]="pickerNascimentoPaciente" placeholder="01/01/1900" formControlName="dataNascimento">
+              <input id="dataNascimentoPaciente" matInput [matDatepicker]="pickerNascimentoPaciente"  [value]="paciente?.dataNascimento" placeholder="01/01/1900" formControlName="dataNascimento">
               <mat-error *ngIf="isValidated(dadosPessoaisForm, 'dataNascimento')">{{"Data de Nascimento é obrigatório."}}</mat-error>
               <mat-datepicker-toggle matSuffix [for]="pickerNascimentoPaciente"></mat-datepicker-toggle>
               <mat-datepicker #pickerNascimentoPaciente></mat-datepicker>
@@ -40,7 +40,7 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Email</mat-label>
-              <input type="email"  matInput placeholder="exemplo@email.com" formControlName="email">
+              <input type="email"  matInput placeholder="exemplo@email.com"  [value]="paciente?.email" formControlName="email">
               <mat-error *ngIf="isValidated(dadosPessoaisForm, 'email') && !dadosPessoaisForm.get('email')?.value">{{"Email é obrigatório."}}</mat-error>
               <mat-error *ngIf="verificaEmailValido(dadosPessoaisForm, 'email')">{{"Email inválido."}}</mat-error>
             </mat-form-field>
@@ -48,7 +48,7 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label [style.fontSize.px]="15">Celular</mat-label>
-              <input matInput mask="(00) 00000-0000" placeholder="(99) 99999-9999" formControlName="contato">
+              <input matInput mask="(00) 00000-0000" placeholder="(99) 99999-9999"  [value]="paciente?.celular" formControlName="contato">
               <mat-error *ngIf="isValidated(dadosPessoaisForm, 'contato')">{{"Celular é obrigatório."}}</mat-error>
             </mat-form-field>
           </div>
@@ -57,7 +57,7 @@
               <mat-label [style.fontSize.px]="15">Telefone Fixo <mat-label [style.fontSize.px]="12"> (Opcional)
                 </mat-label>
               </mat-label>
-              <input matInput mask="(00) 0000-0000" placeholder="(99) 9999-9999" formControlName="contatoFixo">
+              <input matInput mask="(00) 0000-0000" placeholder="(99) 9999-9999"  [value]="paciente?.telefoneFixo" formControlName="contatoFixo">
             </mat-form-field>
           </div>
         </div>
@@ -65,7 +65,7 @@
           <div class="col-3">
             <mat-form-field appearance="outline" class="full-width-field">
               <mat-label>Gênero</mat-label>
-              <mat-select formControlName="genero">
+              <mat-select formControlName="genero"  [value]="paciente?.genero">
                 <mat-option *ngFor="let x of generos" [value]="x.value">
                   {{x.descricao}}
                 </mat-option>
@@ -78,7 +78,7 @@
               <mat-label [style.fontSize.px]="15">Profissão <mat-label [style.fontSize.px]="12"> (Opcional)
                 </mat-label>
               </mat-label>
-              <input matInput placeholder="Autônomo" formControlName="profissao">
+              <input matInput placeholder="Autônomo" [value]="paciente?.profissao" formControlName="profissao">
             </mat-form-field>
           </div>
           <div class="col-6 align-center">
@@ -90,8 +90,7 @@
         </div>
         <div class="row">
           <div class="col-lg-4" style="padding-left: 26px;">
-            <button mat-raised-button matStepperNext color="primary" style="width: 166px;"
-              (click)="nextTabValidation()">Proximo</button>
+            <button id="proxDadosPaciente" mat-raised-button matStepperNext color="primary" style="width: 166px;">Proximo</button>
           </div>
         </div>
       </form>
@@ -182,8 +181,7 @@
             <button type="button" mat-button matStepperPrevious color="accent" style="width: 166px;">Voltar</button>
           </div>
           <div class="col-lg-3">
-            <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;"
-              >Proximo</button>
+            <button id="proxDadosResp" type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;">Proximo</button>
           </div>
         </div>
       </form>
@@ -259,8 +257,7 @@
             <button type="button" mat-button matStepperPrevious color="accent" style="width: 166px;">Voltar</button>
           </div>
           <div class="col-lg-3">
-            <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;"
-              (click)="nextTabValidation()">Proximo</button>
+            <button id="proxDadosEndereco" type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;">Proximo</button>
           </div>
         </div>
       </form>

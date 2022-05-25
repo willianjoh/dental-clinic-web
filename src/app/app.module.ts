@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { ErrorStateMatcher, MAT_DATE_LOCALE, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +18,7 @@ import { LayoutComponent } from './template/layout/layout.component';
 import { AuthService } from './auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 
@@ -50,7 +51,14 @@ export const DateFormat = {
     TemplateModule,
     BrowserAnimationsModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
+    NgxDatatableModule.forRoot({
+      messages: {
+        emptyMessage: 'No data to display', // Message to show when array is presented, but contains no values
+        totalMessage: 'total', // Footer total message
+        selectedMessage: 'selected' // Footer selected message
+      }
+    })
   ],
 
   providers: [
@@ -58,11 +66,13 @@ export const DateFormat = {
     DropdownService,
     ConsultaCepService,
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: LOCALE_ID, useValue: 'pt' },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    }
+    },
+    {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}
   ],
 
   bootstrap: [AppComponent]

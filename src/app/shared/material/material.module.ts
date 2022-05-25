@@ -14,6 +14,10 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatCardModule} from '@angular/material/card';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatTableModule} from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+
 
 @NgModule({
   declarations: [],
@@ -32,7 +36,11 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatNativeDateModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatCardModule
+    MatCardModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSnackBarModule,
+
   ],
   exports: [
     CommonModule,
@@ -49,7 +57,10 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatNativeDateModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatCardModule
+    MatCardModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSnackBarModule
   ]
 })
 export class MaterialModule { }
