@@ -1,0 +1,124 @@
+<h1 class="pt-3" style="text-align: center;">{{tittle}}</h1>
+<mat-stepper #stepper class="example-form" [linear]="true">
+  <mat-step [stepControl]="dadosForm">
+    <form [formGroup]="dadosForm">
+      <ng-template matStepLabel>Dados do Paciente</ng-template>
+      <div class="row">
+        <div class="col-3">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">CPF</mat-label>
+            <input matInput mask="000.000.000-00" formControlName="cpf" (change)="consultarPorCPF()">
+            <mat-error *ngIf="isValidated(dadosForm, 'cpf')">{{"CPF é obrigatório."}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">Name Completo</mat-label>
+            <input matInput placeholder="" formControlName="nome">
+            <mat-error *ngIf="isValidated(dadosForm, 'nome')">{{"Nome é obrigatório."}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">RG
+            </mat-label>
+            <input matInput mask="AA-00.000.000" placeholder="MG-99.999.999" formControlName="rg">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">Data de Nascimento</mat-label>
+            <input id="dataNascimentoPaciente" matInput [matDatepicker]="pickerNascimento" placeholder="01/01/1900" formControlName="dataNascimento">
+            <mat-error *ngIf="isValidated(dadosForm, 'dataNascimento')">{{"Data de Nascimento é obrigatório."}}</mat-error>
+            <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
+            <mat-datepicker #pickerNascimento></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">Email</mat-label>
+            <input type="email" matInput placeholder="exemplo@email.com" formControlName="email">
+            <mat-error *ngIf="isValidated(dadosForm, 'email') && !dadosForm.get('email')?.value">
+              {{"Email é obrigatório."}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">Celular</mat-label>
+            <input matInput mask="(00) 00000-0000" placeholder="(99) 99999-9999"  formControlName="contato">
+            <mat-error *ngIf="isValidated(dadosForm, 'contato')">{{"Celular é obrigatório."}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">Telefone Fixo
+            </mat-label>
+            <input matInput mask="(00) 0000-0000" placeholder="(99) 9999-9999" formControlName="contatoFixo">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4" style="padding-left: 26px;">
+          <button mat-raised-button matStepperNext color="primary" style="width: 166px;">Proximo</button>
+        </div>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="dadosOrcamentoForm">
+    <form [formGroup]="dadosOrcamentoForm">
+      <ng-template matStepLabel>Info. do Orçamento</ng-template>
+      <div class="row">
+          <div class="col-4">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Tipo de Procedimento</mat-label>
+              <input matInput placeholder="" formControlName="tipoProcedimento">
+              <mat-error *ngIf="isValidated(dadosOrcamentoForm, 'tipoProcedimento')">{{"Tipo de Procedimento é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-4">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Valor</mat-label>
+              <input matInput placeholder="" formControlName="valor">
+              <mat-error *ngIf="isValidated(dadosOrcamentoForm, 'valor')">{{"Valor é obrigatório."}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-4">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label [style.fontSize.px]="15">Forma de Pagamento
+              </mat-label>
+              <input matInput formControlName="formaPagamento">
+            </mat-form-field>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label [style.fontSize.px]="15">Data do Orçamento</mat-label>
+            <input id="dataOrcamento" matInput [matDatepicker]="picker" placeholder="01/01/1900" formControlName="dataOrcamento">
+            <mat-error *ngIf="isValidated(dadosOrcamentoForm, 'dataOrcamento')">{{"Data do Orçamento é obrigatório."}}</mat-error>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label>Observações</mat-label>
+            <textarea matInput formControlName="observacao"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3" style="padding-left: 26px;">
+          <button type="button" mat-button matStepperPrevious color="accent" style="width: 166px;">Voltar</button>
+        </div>
+        <div class="col-lg-3">
+          <button type="button" mat-raised-button matStepperNext color="primary" style="width: 166px;" (click)="salvar()">Salvar</button>
+        </div>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>
