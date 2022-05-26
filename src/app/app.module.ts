@@ -19,6 +19,7 @@ import { AuthService } from './auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { OrcamentoModule } from './views/orcamento/orcamento.module';
 
 
 
@@ -48,6 +49,7 @@ export const DateFormat = {
     FormsModule,
     PacienteModule,
     AtendimentoModule,
+    OrcamentoModule,
     TemplateModule,
     BrowserAnimationsModule,
     MaterialModule,
