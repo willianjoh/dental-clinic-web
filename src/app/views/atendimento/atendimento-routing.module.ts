@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: 'atendimento', component: LayoutComponent, canActivate: [AuthGuard],
     children: [
-      { path: 'cadastroAtendimento', component: AtendimentoComponent },
+      { path: 'cadastro-atendimento', component: AtendimentoComponent },
       { path: 'listagem', component: AtendimentoListagemComponent },
       { path: 'editar/:id', component: AtendimentoComponent },
     ]

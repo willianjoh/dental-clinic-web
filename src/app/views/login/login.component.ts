@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   cadastrando: boolean = false;
   loginSucesso: string = "";
   errors: string = "";
+  hide = true;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) { }
 

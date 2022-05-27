@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { Cidade } from 'src/app/models/common-models/cidade.interface';
 import { Estado } from 'src/app/models/common-models/estados.interface';
@@ -7,10 +8,10 @@ import { Generos } from 'src/app/models/common-models/generos.interface';
 import { ConsultaCepService } from 'src/app/services/consulta-cep.service';
 import { DropdownService } from 'src/app/services/dropdown.service';
 import { PacienteService } from 'src/app/services/paciente.service';
-import { CommonUtils } from '../../../util/common-utils';
-import { Paciente } from '../../../models/common-models/paciente.interface';
 import { Endereco } from '../../../models/common-models/endereco.interface';
-import { ActivatedRoute } from '@angular/router';
+import { Paciente } from '../../../models/common-models/paciente.interface';
+import { CommonUtils } from '../../../util/common-utils';
+import { Responsavel } from './../../../models/common-models/paciente.interface';
 
 @Component({
   selector: 'app-paciente',
@@ -27,6 +28,7 @@ export class PacienteComponent implements OnInit {
   pacienteId!: number;
   paciente!: Paciente;
   endereco!: Endereco;
+  responsavel!: Responsavel;
 
   generos: Generos[] = [];
   estados: Estado[] = [];
@@ -53,36 +55,43 @@ export class PacienteComponent implements OnInit {
 
   getPaciente() {
     this.pacienteService.getPacienteById(this.pacienteId)
-    .subscribe(resp => {
-      this.paciente = resp
-      this.paciente.cpf = CommonUtils.formataCPF(resp.cpf);
-      this.paciente.celular = resp.celular.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3")
-      this.paciente.telefoneFixo = resp.telefoneFixo.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3")
-      this.endereco = resp.endereco
-      this.dadosPessoaisForm.controls['nome'].setValue(resp.nomeCompleto)
-      this.dadosPessoaisForm.controls['email'].setValue(resp.email)
-      this.dadosPessoaisForm.controls['cpf'].setValue(this.paciente.cpf)
-      this.dadosPessoaisForm.controls['dataNascimento'].setValue(resp.dataNascimento)
-      this.dadosPessoaisForm.controls['contato'].setValue(this.paciente.celular)
-      this.dadosPessoaisForm.controls['genero'].setValue(resp.genero)
-      this.dadosPessoaisForm.controls['rg'].setValue(this.paciente.rg)
-      this.dadosPessoaisForm.controls['contatoFixo'].setValue(this.paciente.telefoneFixo)
-      this.dadosPessoaisForm.controls['contatoFixo'].setValue(this.paciente.telefoneFixo)
-      this.dadosPessoaisForm.controls['profissao'].setValue(this.paciente.profissao)
-      this.enderecoForm.controls['cep'].setValue(resp.endereco.cep)
-      this.enderecoForm.controls['numero'].setValue(resp.endereco.numero)
-      this.enderecoForm.controls['complemento'].setValue(resp.endereco.complemento)
-      this.informacoesForm.controls['info'].setValue(resp.informacoesAdicionais)
+      .subscribe(resp => {
+        this.paciente = resp
+        this.endereco = resp.endereco
+        this.responsavel = resp.novoResponsavelDTO
+        this.paciente.rg = resp.rg.replace(/^(\d\d)(\d{2})(\d{2})(\d{3})(\d{3}).*/, "$1-$2.$3.$4")
+        this.paciente.cpf = CommonUtils.formataCPF(resp.cpf)
+        this.dadosPessoaisForm.controls['nome'].setValue(resp.nomeCompleto)
+        this.dadosPessoaisForm.controls['email'].setValue(resp.email)
+        this.dadosPessoaisForm.controls['cpf'].setValue(this.paciente.cpf)
+        this.dadosPessoaisForm.controls['dataNascimento'].setValue(resp.dataNascimento)
+        this.dadosPessoaisForm.controls['contato'].setValue(resp.celular.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3"))
+        this.dadosPessoaisForm.controls['genero'].setValue(resp.genero)
+        this.dadosPessoaisForm.controls['rg'].setValue(this.paciente.rg)
+        this.dadosPessoaisForm.controls['contatoFixo'].setValue(resp.telefoneFixo.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3"))
+        this.dadosPessoaisForm.controls['profissao'].setValue(this.paciente.profissao)
+        this.enderecoForm.controls['cep'].setValue(resp.endereco.cep)
+        this.enderecoForm.controls['numero'].setValue(resp.endereco.numero)
+        this.enderecoForm.controls['complemento'].setValue(resp.endereco.complemento)
+        this.informacoesForm.controls['info'].setValue(resp.informacoesAdicionais)
 
-      this.consultaCep()
-      if(resp.maiorIdade){
-        this.dadosPessoaisForm.controls['maiorIdade'].setValue(true)
-       this.mostraTemplateDadosResponsavel()
-      } else {
-        this.dadosPessoaisForm.controls['maiorIdade'].setValue(false)
-       this.mostraTemplateDadosResponsavel()
-      }
-    })
+        this.consultaCep()
+        if (!resp.maiorIdade) {
+          this.showResponsavelForm = true
+          this.pacienteService.getResponsavelById(resp.idResponsavel)
+            .subscribe(res => {
+              this.dadosPessoaisResponsavelForm.controls['nome'].setValue(res.nomeCompleto)
+              this.dadosPessoaisResponsavelForm.controls['email'].setValue(res.email)
+              this.dadosPessoaisResponsavelForm.controls['cpf'].setValue(res.cpf)
+              this.dadosPessoaisResponsavelForm.controls['dataNascimento'].setValue(res.dataNascimento)
+              this.dadosPessoaisResponsavelForm.controls['contato'].setValue(res.celular)
+              this.dadosPessoaisResponsavelForm.controls['genero'].setValue(res.genero)
+              this.dadosPessoaisResponsavelForm.controls['rg'].setValue(res.rg)
+              this.dadosPessoaisResponsavelForm.controls['contatoFixo'].setValue(res.telefoneFixo)
+              this.dadosPessoaisResponsavelForm.controls['profissao'].setValue(res.profissao)
+            })
+        }
+      })
   }
 
   private getCidadesPorEstado() {
@@ -215,7 +224,7 @@ export class PacienteComponent implements OnInit {
   }
 
   salvar() {
-    if(this.paciente?.id){
+    if (this.paciente?.id) {
       const param = this.formatParam()
       this.pacienteService.editar(param, this.paciente.id).pipe(
       ).subscribe(resp => {
@@ -249,20 +258,6 @@ export class PacienteComponent implements OnInit {
   }
 
   formatParam(): Paciente {
-    let responsavel;
-    if (this.dadosPessoaisForm.get('maiorIdade')?.value) {
-      responsavel = {
-        nomeCompleto: this.dadosPessoaisResponsavelForm.get('nome')?.value,
-        email: this.dadosPessoaisResponsavelForm.get('email')?.value,
-        cpf: this.dadosPessoaisResponsavelForm.get('cpf')?.value,
-        dataNascimento: this.dadosPessoaisResponsavelForm.get('dataNascimento')?.value,
-        celular: this.dadosPessoaisResponsavelForm.get('contato')?.value,
-        telefoneFixo: this.dadosPessoaisResponsavelForm.get('contatoFixo')?.value,
-        rg: this.dadosPessoaisResponsavelForm.get('rg')?.value,
-        profissao: this.dadosPessoaisResponsavelForm.get('profissao')?.value,
-        genero: this.dadosPessoaisResponsavelForm.get('genero')?.value,
-      }
-    }
     const endereco: Endereco = {
       cep: this.enderecoForm.get('cep')?.value,
       logradouro: this.enderecoForm.get('logradouro')?.value,
@@ -272,10 +267,25 @@ export class PacienteComponent implements OnInit {
       complemento: this.enderecoForm.get('complemento')?.value,
       uf: this.enderecoForm.get('estado')?.value
     }
+
+    if (this.dadosPessoaisForm.get('maiorIdade')?.value == false) {
+      this.responsavel = {
+        nomeCompleto: this.dadosPessoaisResponsavelForm.get('nome')?.value,
+        email: this.dadosPessoaisResponsavelForm.get('email')?.value,
+        cpf: String(this.dadosPessoaisResponsavelForm.get('cpf')?.value).replace("/[^a-z0-9]/gi", ''),
+        dataNascimento: this.dadosPessoaisResponsavelForm.get('dataNascimento')?.value,
+        celular: this.dadosPessoaisResponsavelForm.get('contato')?.value,
+        telefoneFixo: this.dadosPessoaisResponsavelForm.get('contatoFixo')?.value,
+        rg: this.dadosPessoaisResponsavelForm.get('rg')?.value,
+        profissao: this.dadosPessoaisResponsavelForm.get('profissao')?.value,
+        genero: this.dadosPessoaisResponsavelForm.get('genero')?.value,
+        endereco: endereco
+      }
+    }
     return {
       nomeCompleto: this.dadosPessoaisForm.get('nome')?.value,
       email: this.dadosPessoaisForm.get('email')?.value,
-      cpf: this.dadosPessoaisForm.get('cpf')?.value,
+      cpf: String(this.dadosPessoaisForm.get('cpf')?.value).replace("/[^a-z0-9]/gi", ''),
       dataNascimento: this.dadosPessoaisForm.get('dataNascimento')?.value,
       celular: this.dadosPessoaisForm.get('contato')?.value,
       telefoneFixo: this.dadosPessoaisForm.get('contatoFixo')?.value,
@@ -283,7 +293,7 @@ export class PacienteComponent implements OnInit {
       profissao: this.dadosPessoaisForm.get('profissao')?.value,
       genero: this.dadosPessoaisForm.get('genero')?.value,
       maiorIdade: this.dadosPessoaisForm.get('maiorIdade')?.value,
-      responsavel: responsavel ?? null,
+      novoResponsavelDTO: this.responsavel ?? null,
       endereco: endereco,
       informacoesAdicionais: this.informacoesForm.get('info')?.value,
     }

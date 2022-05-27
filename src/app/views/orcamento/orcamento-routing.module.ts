@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'src/app/auth.guard';
 import { LayoutComponent } from 'src/app/template/layout/layout.component';
 import { OrcamentoComponent } from './orcamento-cadastro/orcamento.component';
+import { OrcamentoListagemComponent } from './orcamento-listagem/orcamento-listagem.component';
 
 
 const routes: Routes = [
@@ -10,7 +11,7 @@ const routes: Routes = [
     path: 'orcamento', component: LayoutComponent, canActivate: [AuthGuard],
     children: [
       { path: 'cadastro-orcamento', component: OrcamentoComponent },
-      //{ path: 'listagem', component:  },
+      { path: 'listagem', component: OrcamentoListagemComponent },
       { path: 'editar/:id', component: OrcamentoComponent },
     ]
   },

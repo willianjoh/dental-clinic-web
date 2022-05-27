@@ -44,7 +44,6 @@ export class AtendimentoComponent implements OnInit {
           horario: this.atendimento.horario,
           local: this.atendimento.local
         })
-        this.dadosPessoaisForm.controls['cpf'].disable()
         this.consultarPorCPF()
     })
   }

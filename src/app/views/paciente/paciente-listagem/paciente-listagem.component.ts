@@ -42,6 +42,7 @@ export class PacienteListagemComponent implements OnInit {
       this.dataSource = resp.map(x => ({
         ...x,
         cpf: CommonUtils.formataCPF(x.cpf),
+        dataNascimento: CommonUtils.formatDate(x.dataNascimento),
         celular: x.celular.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3")
       }))
     })

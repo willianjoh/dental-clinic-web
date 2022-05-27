@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: 'paciente', component: LayoutComponent, canActivate: [AuthGuard],
     children: [
-      { path: 'cadastroPaciente', component: PacienteComponent },
+      { path: 'cadastro-paciente', component: PacienteComponent },
       { path: 'listagem', component: PacienteListagemComponent },
       { path: 'editar/:id', component: PacienteComponent },
     ],

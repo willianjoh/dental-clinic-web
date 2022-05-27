@@ -6,6 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { MaterialModule } from 'src/app/shared/material/material.module';
 import { OrcamentoComponent } from './orcamento-cadastro/orcamento.component';
 import { OrcamentoRoutingModule } from './orcamento-routing.module';
+import { OrcamentoListagemComponent } from './orcamento-listagem/orcamento-listagem.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { OrcamentoRoutingModule } from './orcamento-routing.module';
     SharedModule,
     MaterialModule,
   ],
-  declarations: [OrcamentoComponent]
+  declarations: [OrcamentoComponent, OrcamentoListagemComponent]
 })
 export class OrcamentoModule { }

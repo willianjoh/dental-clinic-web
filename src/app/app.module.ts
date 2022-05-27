@@ -20,7 +20,10 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { OrcamentoModule } from './views/orcamento/orcamento.module';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 
+registerLocaleData(localePt, 'pt');
 
 
 export const DateFormat = {
@@ -67,7 +70,6 @@ export const DateFormat = {
     AuthService,
     DropdownService,
     ConsultaCepService,
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     { provide: LOCALE_ID, useValue: 'pt' },
     {
       provide: HTTP_INTERCEPTORS,
@@ -79,6 +81,4 @@ export const DateFormat = {
 
   bootstrap: [AppComponent]
 })
-export class AppModule {
-
-}
+export class AppModule {}

@@ -25,12 +25,31 @@ export class OrcamentoComponent implements OnInit {
     private route: ActivatedRoute) {
     this.route.params.subscribe(params => this.orcamentoId = params['id']);
     if (this.orcamentoId) {
-      this.tittle = "Editar Atendimento"
+      this.tittle = "Editar Orçamento"
+      this.getOrcamento()
     }
   }
 
   ngOnInit(): void {
     this.buildFormGroup();
+  }
+
+  getOrcamento() {
+    this.orcamentoService.getAtendimentoById(this.orcamentoId)
+      .subscribe(resp => {
+        this.orcamento = resp
+        this.dadosForm.patchValue({
+          cpf: this.orcamento.cpfPaciente,
+        })
+        this.dadosOrcamentoForm.patchValue({
+          formaPagamento: this.orcamento.formaPagamento,
+          observacao: this.orcamento.observacao,
+          dataOrcamento: this.orcamento.dataOrcamento,
+          tipoProcedimento: this.orcamento.tipoProcedimento,
+          valor: this.orcamento.valor,
+        })
+        this.consultarPorCPF()
+      })
   }
 
   buildFormGroup() {
@@ -57,7 +76,8 @@ export class OrcamentoComponent implements OnInit {
   salvar() {
     if (this.orcamento?.id) {
       const param = this.formatParam()
-      this.orcamentoService.editar(param, this.orcamentoId).subscribe(resp => {
+      this.orcamentoService.editar(param, this.orcamentoId)
+      .subscribe(resp => {
         if (resp.id != null) {
           alert("Orçamento atualizado com sucesso!")
         } else {

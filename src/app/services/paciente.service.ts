@@ -3,13 +3,15 @@ import { Injectable } from "@angular/core";
 import { Usuario } from '../models/common-models/usuario.interface';
 import { Observable } from 'rxjs';
 import { environment } from "src/environments/environment";
-import { Paciente } from '../models/common-models/paciente.interface';
+import { Paciente, Responsavel } from '../models/common-models/paciente.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PacienteService {
   apiURL: string = environment.apiURLBase + '/api/paciente'
+  apiURLResponsavel: string = environment.apiURLBase + '/api/responsavel'
+
 
   constructor(private http: HttpClient) { }
 
@@ -27,6 +29,10 @@ export class PacienteService {
 
   getPacienteById(id: any): Observable<Paciente> {
     return this.http.get<Paciente>(this.apiURL + '/buscarPorId?id=' + id)
+  }
+
+  getResponsavelById(id: any): Observable<Responsavel> {
+    return this.http.get<Responsavel>(this.apiURLResponsavel + '/buscarPorId?id=' + id)
   }
 
   deletar(id: any): Observable<Paciente> {

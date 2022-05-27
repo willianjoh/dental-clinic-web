@@ -2,36 +2,37 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
 import { Router } from "@angular/router";
+import { OrcamentoService } from "src/app/services/orcamento.service";
 import { CommonUtils } from "src/app/util/common-utils";
 import { Atendimento } from '../../../models/common-models/atendimento.interface';
-import { AtendimentoService } from '../../../services/atendimento.service';
+import { Orcamento } from '../../../models/common-models/orcamento.interface';
 
 export interface PeriodicElement {
   nomePaciente: string;
   cpfPaciente: number;
-  dataAtendimento: string;
-  horario: string;
-  local: string
+  tipoProcedimento: string;
+  valor: string;
+  dataOrcamento: string
   observacao: string;
 }
 
 @Component({
-  selector: 'app-atendimento-listagem',
-  templateUrl: './atendimento-listagem.component.html',
-  styleUrls: ['./atendimento-listagem.component.scss']
+  selector: 'app-orcamento-listagem',
+  templateUrl: './orcamento-listagem.component.html',
+  styleUrls: ['./orcamento-listagem.component.scss']
 })
 
 
-export class AtendimentoListagemComponent implements OnInit {
-  dataSource!: Atendimento[];
-  displayedColumns: string[] = ['nomePaciente', 'cpfPaciente', 'dataAtendimento', 'horario', 'local', 'observacao'];
+export class OrcamentoListagemComponent implements OnInit {
+  dataSource!: Orcamento[];
+  displayedColumns: string[] = ['nomePaciente', 'cpfPaciente', 'tipoProcedimento', 'valor', 'dataOrcamento', 'observacao'];
   clickedRows = new Set<PeriodicElement>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   selected!: Atendimento;
 
   constructor(private formBuilder: FormBuilder,
-    private atendimentoService: AtendimentoService,
+    private orcamentoService: OrcamentoService,
     private router: Router) {
   }
 
@@ -40,26 +41,27 @@ export class AtendimentoListagemComponent implements OnInit {
   }
 
   buscar(){
-    this.atendimentoService.buscarTodos()
+    this.orcamentoService.buscarTodos()
     .subscribe(resp =>{
       this.dataSource = resp.map(x => ({
         ...x,
-        dataAtendimento: CommonUtils.formatDate(x.dataAtendimento),
+        valor: "R$ " + x.valor,
+        dataOrcamento: CommonUtils.formatDate(x.dataOrcamento),
         cpfPaciente: CommonUtils.formataCPF(x.cpfPaciente),
       }))
     })
   }
 
   deletar(){
-   this.atendimentoService.deletar(this.selected.id)
+   this.orcamentoService.deletar(this.selected.id)
     .subscribe(resp =>{
-      alert("Atendimento deletado com sucesso!")
+      alert("Orçamento deletado com sucesso!")
       this.buscar()
     })
   }
 
   editar(){
-    this.router.navigate(['atendimento/editar', this.selected.id])
+    this.router.navigate(['orcamento/editar', this.selected.id])
   }
 
   onSelect(selected: any) {
